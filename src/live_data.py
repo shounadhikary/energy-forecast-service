@@ -4,9 +4,17 @@ import pandas as pd
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-load_dotenv()  # read .env
+load_dotenv()  # read .env (for local use)
 
 EIA_API_KEY = os.getenv("EIA_API_KEY")
+
+# Fallback to Streamlit secrets when deployed
+if not EIA_API_KEY:
+    try:
+        import streamlit as st
+        EIA_API_KEY = st.secrets["EIA_API_KEY"]
+    except Exception:
+        pass
 BASE_URL = "https://api.eia.gov/v2/electricity/rto/region-data/data/"
 
 # We use the PJM region to match the model's training data (AEP is part of PJM)
@@ -43,7 +51,7 @@ def fetch_recent_demand(hours=400):
     df["consumption"] = pd.to_numeric(df["value"], errors="coerce")
     df["consumption"] = df["consumption"] * 0.45  # scale full PJM down to PJME range
 
-    
+
     df = df[["Datetime", "consumption"]].dropna()
     df = df.sort_values("Datetime").reset_index(drop=True)
     return df
