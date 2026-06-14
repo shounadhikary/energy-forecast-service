@@ -1,4 +1,4 @@
-# ⚡ Energy Consumption Forecasting Service
+#  Energy Consumption Forecasting Service
 
 An end-to-end machine learning system that forecasts short-term electricity demand using **near real-time grid data**. The project takes a model from a notebook experiment all the way to a deployed, interactive product - demonstrating the full machine-learning lifecycle: data engineering, modeling, API design, testing, and CI/CD.
 
