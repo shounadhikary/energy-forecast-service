@@ -11,14 +11,15 @@ import streamlit as st
 sys.path.append(str(Path(__file__).resolve().parent / "src"))
 from predict import predict_one
 from config import PROCESSED_DATA_PATH
+from live_data import fetch_recent_demand
 
 st.set_page_config(page_title="Energy Forecast Dashboard", layout="wide")
 
 
-@st.cache_data
+@st.cache_data(ttl=900)  # cache for 15 minutes, then refetch
 def load_history():
-    """Load processed data once and cache it."""
-    df = pd.read_csv(PROCESSED_DATA_PATH, parse_dates=["Datetime"])
+    """Fetch recent live demand from EIA."""
+    df = fetch_recent_demand(hours=400)
     return df
 
 
@@ -109,15 +110,17 @@ with col1:
     dayofweek = st.slider("Day of week (0=Mon)", 0, 6, 2)
     month = st.slider("Month", 1, 12, 6)
 with col2:
-    lag_1h = st.number_input("Consumption 1h ago (MW)", value=15000.0)
-    lag_24h = st.number_input("Consumption 24h ago (MW)", value=14500.0)
-    roll_mean = st.number_input("24h rolling mean (MW)", value=14700.0)
+    lag_1h = st.number_input("Consumption 1h ago (MW)", value=float(recent["consumption"].iloc[-1]))
+    lag_24h = st.number_input("Consumption 24h ago (MW)", value=float(recent["consumption"].iloc[-24]))
+    roll_mean = st.number_input("24h rolling mean (MW)", value=float(recent["consumption"].iloc[-24:].mean()))
 
 manual_feats = {
     "hour": hour, "dayofweek": dayofweek, "month": month,
     "dayofyear": 165, "is_weekend": 1 if dayofweek >= 5 else 0,
-    "lag_1h": lag_1h, "lag_24h": lag_24h, "lag_168h": 14800.0,
-    "roll_mean_24h": roll_mean, "roll_std_24h": 300.0,
+    "lag_1h": lag_1h, "lag_24h": lag_24h,
+    "lag_168h": recent["consumption"].iloc[-168],
+    "roll_mean_24h": roll_mean,
+    "roll_std_24h": recent["consumption"].iloc[-24:].std(),
 }
 manual_pred = predict_one(manual_feats)
 st.metric("Predicted Consumption (MW)", f"{manual_pred:,.2f}")

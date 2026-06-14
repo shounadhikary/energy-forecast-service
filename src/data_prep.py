@@ -8,7 +8,7 @@ def load_data(path=RAW_DATA_PATH):
     df = pd.read_csv(path)
     df["Datetime"] = pd.to_datetime(df["Datetime"])
     df = df.sort_values("Datetime").reset_index(drop=True)
-    df = df.rename(columns={"AEP_MW": "consumption"})
+    df = df.rename(columns={"PJME_MW": "consumption"})
     return df
 
 
