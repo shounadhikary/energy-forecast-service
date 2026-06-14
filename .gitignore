@@ -7,11 +7,11 @@ __pycache__/
 data/
 archive/
 
-# Models
-*.joblib
+
 
 # OS
 .DS_Store
 
 # Secrets
 .env
+
