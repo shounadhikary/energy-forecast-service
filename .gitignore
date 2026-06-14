@@ -12,3 +12,6 @@ archive/
 
 # OS
 .DS_Store
+
+# Secrets
+.env
