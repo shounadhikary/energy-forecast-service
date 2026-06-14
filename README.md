@@ -1,6 +1,6 @@
 # ⚡ Energy Consumption Forecasting Service
 
-An end-to-end machine learning system that forecasts short-term electricity demand using **near real-time grid data**. The project takes a model from a notebook experiment all the way to a deployed, interactive product — demonstrating the full machine-learning lifecycle: data engineering, modeling, API design, testing, and CI/CD.
+An end-to-end machine learning system that forecasts short-term electricity demand using **near real-time grid data**. The project takes a model from a notebook experiment all the way to a deployed, interactive product - demonstrating the full machine-learning lifecycle: data engineering, modeling, API design, testing, and CI/CD.
 
 ---
 
@@ -12,12 +12,12 @@ The system fetches near real-time hourly electricity demand from the **U.S. Ener
 
 ## Key Features
 
-- **Live data pipeline** — pulls recent hourly demand from the EIA API.
-- **Time-series feature engineering** — lag features (1h, 24h, 168h), rolling statistics, and calendar features (hour, weekday, month, weekend).
-- **Model comparison** — a Linear Regression baseline vs. an XGBoost regressor, evaluated with a chronological train/test split.
-- **REST API** — a FastAPI service with automatic Swagger documentation and `/health` and `/predict` endpoints.
-- **Interactive dashboard** — a Streamlit app with live KPI cards, a recent-trend chart, a recursive 24-hour forecast, and a manual prediction tool.
-- **Engineering practices** — modular code, environment-based secret handling, automated tests (pytest), and a GitHub Actions CI pipeline.
+- **Live data pipeline** - pulls recent hourly demand from the EIA API.
+- **Time-series feature engineering** - lag features (1h, 24h, 168h), rolling statistics, and calendar features (hour, weekday, month, weekend).
+- **Model comparison** - a Linear Regression baseline vs. an XGBoost regressor, evaluated with a chronological train/test split.
+- **REST API** - a FastAPI service with automatic Swagger documentation and `/health` and `/predict` endpoints.
+- **Interactive dashboard** - a Streamlit app with live KPI cards, a recent-trend chart, a recursive 24-hour forecast, and a manual prediction tool.
+- **Engineering practices** - modular code, environment-based secret handling, automated tests (pytest), and a GitHub Actions CI pipeline.
 
 ---
 
