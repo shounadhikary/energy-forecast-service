@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-# Allow importing from the src/ folder
+# Allow importing from the src-folder
 sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
 
 from fastapi import FastAPI
