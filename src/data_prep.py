@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from config import RAW_DATA_PATH, PROCESSED_DATA_PATH
 
 

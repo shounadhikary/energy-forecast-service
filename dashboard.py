@@ -10,7 +10,7 @@ import streamlit as st
 # Allow importing from src/
 sys.path.append(str(Path(__file__).resolve().parent / "src"))
 from predict import predict_one
-from config import PROCESSED_DATA_PATH
+from config import PROCESSED_DATA_PATH, DEFAULT_DAYOFYEAR
 from live_data import fetch_recent_demand
 
 st.set_page_config(page_title="Energy Forecast Dashboard", layout="wide")
@@ -37,6 +37,26 @@ def build_features_for_time(dt, recent):
         "roll_mean_24h": recent["consumption"].iloc[-24:].mean(),
         "roll_std_24h": recent["consumption"].iloc[-24:].std(),
     }
+
+
+@st.cache_data(ttl=900)
+def compute_forecast(recent):
+    """Roll the model forward 24 hours. Cached so it only recomputes when the
+    underlying history changes, not on every slider/widget interaction."""
+    last_time = recent["Datetime"].iloc[-1]
+    working = recent.copy()
+    future_times, future_preds = [], []
+    for i in range(1, 25):
+        next_time = last_time + pd.Timedelta(hours=i)
+        feats = build_features_for_time(next_time, working)
+        pred = predict_one(feats)
+        future_times.append(next_time)
+        future_preds.append(pred)
+        # Append the prediction so the next step can use it as a lag
+        working = pd.concat([working, pd.DataFrame({
+            "Datetime": [next_time], "consumption": [pred]
+        })], ignore_index=True)
+    return future_times, future_preds
 
 
 
@@ -75,20 +95,7 @@ st.plotly_chart(fig_trend, width='stretch')
 
 # ---------- Next 24-hour forecast ----------
 st.subheader("Next 24-Hour Forecast")
-last_time = recent["Datetime"].iloc[-1]
-working = recent.copy()
-future_times, future_preds = [], []
-
-for i in range(1, 25):
-    next_time = last_time + pd.Timedelta(hours=i)
-    feats = build_features_for_time(next_time, working)
-    pred = predict_one(feats)
-    future_times.append(next_time)
-    future_preds.append(pred)
-    # Append the prediction so the next step can use it as a lag
-    working = pd.concat([working, pd.DataFrame({
-        "Datetime": [next_time], "consumption": [pred]
-    })], ignore_index=True)
+future_times, future_preds = compute_forecast(recent)
 
 fig_fc = go.Figure()
 fig_fc.add_trace(go.Scatter(
@@ -116,7 +123,7 @@ with col2:
 
 manual_feats = {
     "hour": hour, "dayofweek": dayofweek, "month": month,
-    "dayofyear": 165, "is_weekend": 1 if dayofweek >= 5 else 0,
+    "dayofyear": DEFAULT_DAYOFYEAR, "is_weekend": 1 if dayofweek >= 5 else 0,
     "lag_1h": lag_1h, "lag_24h": lag_24h,
     "lag_168h": recent["consumption"].iloc[-168],
     "roll_mean_24h": roll_mean,

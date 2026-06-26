@@ -1,11 +1,6 @@
 import joblib
 import pandas as pd
-from config import MODEL_PATH
-
-FEATURE_COLS = [
-    "hour", "dayofweek", "month", "dayofyear", "is_weekend",
-    "lag_1h", "lag_24h", "lag_168h", "roll_mean_24h", "roll_std_24h",
-]
+from config import MODEL_PATH, FEATURE_COLS
 
 _model = None
 

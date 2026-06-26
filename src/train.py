@@ -4,13 +4,9 @@ import joblib
 from sklearn.linear_model import LinearRegression
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-from config import PROCESSED_DATA_PATH, MODEL_PATH
+from config import PROCESSED_DATA_PATH, MODEL_PATH, FEATURE_COLS
 
 
-FEATURE_COLS = [
-    "hour", "dayofweek", "month", "dayofyear", "is_weekend",
-    "lag_1h", "lag_24h", "lag_168h", "roll_mean_24h", "roll_std_24h",
-]
 TARGET_COL = "consumption"
 
 

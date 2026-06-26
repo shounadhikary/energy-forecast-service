@@ -99,13 +99,22 @@ venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 ```
 
-### 2. Add your EIA API key
+### 2. Configure environment variables
 
-Get a free key from [eia.gov/opendata](https://www.eia.gov/opendata/), then create a `.env` file in the project root:
+The project reads secrets from a `.env` file in the project root. An example file
+(`.env.example`) lists every variable the project uses. Copy it and fill in your
+real values:
 
+```bash
+cp .env.example .env        # Windows: copy .env.example .env
 ```
-EIA_API_KEY=your_key_here
-```
+
+| Variable      | Required | Description                                                                 |
+|---------------|----------|-----------------------------------------------------------------------------|
+| `EIA_API_KEY` | Yes      | EIA Open Data API key — get a free key at [eia.gov/opendata](https://www.eia.gov/opendata/). |
+
+`.env` is listed in `.gitignore` and must **never** be committed. When deploying to
+Streamlit Community Cloud, set `EIA_API_KEY` as a Streamlit secret instead of using `.env`.
 
 ### 3. Prepare data and train the model
 

@@ -2,12 +2,12 @@
 venv/
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Data files (too large for git)
 data/
 archive/
-
-
+*.zip
 
 # OS
 .DS_Store

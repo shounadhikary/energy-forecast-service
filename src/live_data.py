@@ -1,8 +1,10 @@
 import os
 import requests
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+
+from config import PJM_TO_PJME_SCALE
 
 load_dotenv()  # read .env (for local use)
 
@@ -26,7 +28,7 @@ def fetch_recent_demand(hours=400):
     if not EIA_API_KEY:
         raise RuntimeError("EIA_API_KEY not found. Check your .env file.")
 
-    end = datetime.utcnow()
+    end = datetime.now(timezone.utc)
     start = end - timedelta(hours=hours)
 
     params = {
@@ -49,7 +51,7 @@ def fetch_recent_demand(hours=400):
     df = pd.DataFrame(rows)
     df["Datetime"] = pd.to_datetime(df["period"])
     df["consumption"] = pd.to_numeric(df["value"], errors="coerce")
-    df["consumption"] = df["consumption"] * 0.45  # scale full PJM down to PJME range
+    df["consumption"] = df["consumption"] * PJM_TO_PJME_SCALE  # scale full PJM down to PJME range
 
 
     df = df[["Datetime", "consumption"]].dropna()
